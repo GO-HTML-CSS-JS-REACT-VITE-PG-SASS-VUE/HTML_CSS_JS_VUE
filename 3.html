@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Страница 3</title>
-</head>
+<html>
 <body>
-    <h1>Это страница #3</h1>
+    <div id="container"></div>
+    <button onclick="addItem()">Добавить элемент</button>
+
+    <script>
+        function addItem() {
+            const newElement = document.createElement('p');
+            newElement.textContent = 'Новый элемент ' + Date.now();
+            document.getElementById('container').appendChild(newElement);
+        }
+    </script>
 </body>
 </html>
+<!-- Пояснение: 
+ - createElement() создает новый HTML элемент 
+ - appendChild()  добавляет элемент в DOM 
+ - Date.now() для уникального текста 
+ - Динамическое  создание контента -->
