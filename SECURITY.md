@@ -1,116 +1,372 @@
-# 安全策略 Security Policy
+https://go-html-css-js-react-vite-pg-sass-vue.github.io/HTML_CSS_JS_VUE/
 
-## 受支持的版本 Supported Versions
-
-目前 v2ray-core 项目由 [V2Fly 社区](https://github.com/v2fly) 继续提供代码维护，由于精力有限且项目复杂度较高，只维护主线代码的功能和安全性完整。原则上主页的兼容性保证继续遵循，
-如有例外另行说明。
-
-Currently v2ray-core project is maintained by [V2Fly community](https://github.com/v2fly). Feature and security guarantee may only be limited to the
-master branch, though we would still try our best to follow the compatibility claims listed on the official website.
+git add .
+git commit -m "роки - задания с решением"
+git push origin main
 
 
-## 汇报安全风险 Reporting a Vulnerability
+git remote add origin https://github.com/GO-HTML-CSS-JS-REACT-VITE-PG-SASS-VUE/HTML_CSS_JS_VUE.git
+git pull origin main
+git status
+git add .
+git commit -m "Мои изменения"
+git push origin 
 
-使用邮箱: security |at| v2fly.org。
+# HTML_CSS_JS_VUE
+Пример 1: Базовое создание БД, таблицы и операции CRUD
+Это основа основ. Показывает, как подключиться к БД, создать таблицу и выполнять основные операции (Create, Read, Update, Delete).
 
-Report to email: security |at| v2fly.org.
+```python
+import sqlite3
 
-GPG public key:
+# 1. Подключение к БД (создает файл, если его нет)
+def create_connection():
+    conn = sqlite3.connect('my_database.db')
+    return conn
 
+# 2. Создание таблицы
+def create_table(conn):
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            age INTEGER,
+            email TEXT UNIQUE
+        )
+    ''')
+    conn.commit()
+    print("Таблица 'users' создана или уже существует.")
+
+# 3. Вставка данных (Create)
+def insert_user(conn, name, age, email):
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            INSERT INTO users (name, age, email)
+            VALUES (?, ?, ?)
+        ''', (name, age, email))
+        conn.commit()
+        print(f"Пользователь {name} добавлен.")
+    except sqlite3.IntegrityError:
+        print(f"Ошибка: email {email} уже существует.")
+
+# 4. Чтение данных (Read)
+def get_all_users(conn):
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users')
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+
+# 5. Обновление данных (Update)
+def update_user_age(conn, user_id, new_age):
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE users
+        SET age = ?
+        WHERE id = ?
+    ''', (new_age, user_id))
+    conn.commit()
+    print(f"Возраст пользователя с id={user_id} обновлен.")
+
+# 6. Удаление данных (Delete)
+def delete_user(conn, user_id):
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    conn.commit()
+    print(f"Пользователь с id={user_id} удален.")
+
+# Запуск примера
+if __name__ == "__main__":
+    conn = create_connection()
+    create_table(conn)
+    
+    insert_user(conn, "Анна", 28, "anna@mail.com")
+    insert_user(conn, "Иван", 35, "ivan@mail.com")
+    
+    print("\nВсе пользователи:")
+    get_all_users(conn)
+    
+    update_user_age(conn, 1, 29)
+    delete_user(conn, 2)
+    
+    print("\nПосле изменений:")
+    get_all_users(conn)
+    
+    conn.close()
 ```
-pub   rsa4096 2020-06-02 [SC] [有效至：2022-01-02]
-      E2E35E27914FB007C0D4B6DDB117BA3BE8B494A7
-uid           [ 绝对 ] V2Fly Developers <dev@v2fly.org>
-sub   rsa4096 2020-06-02 [E] [有效至：2022-01-02]
-sub   rsa4096 2020-11-08 [S] [有效至：2022-01-02] // 用于 Debian / Ubuntu 签名
+Пример 2: Анализ данных с агрегацией и фильтрацией
+Показывает, как использовать SQL для вычислений — агрегирующие функции, группировка и фильтрация.
 
+```python
+import sqlite3
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+# Создаем тестовые данные о продажах
+def setup_sales_data(conn):
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sales (
+            id INTEGER PRIMARY KEY,
+            product TEXT,
+            category TEXT,
+            amount REAL,
+            sale_date DATE
+        )
+    ''')
+    
+    # Очищаем и добавляем тестовые данные
+    cursor.execute("DELETE FROM sales")
+    test_data = [
+        ('Ноутбук', 'Электроника', 50000.0, '2024-01-15'),
+        ('Мышь', 'Электроника', 2500.0, '2024-01-15'),
+        ('Книга', 'Книги', 800.0, '2024-01-16'),
+        ('Ноутбук', 'Электроника', 45000.0, '2024-01-17'),
+        ('Книга', 'Книги', 1200.0, '2024-01-17'),
+    ]
+    cursor.executemany('INSERT INTO sales (product, category, amount, sale_date) VALUES (?, ?, ?, ?)', test_data)
+    conn.commit()
 
-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
-=quYd
------END PGP PUBLIC KEY BLOCK-----
+# Аналитические запросы
+def run_sales_analysis(conn):
+    cursor = conn.cursor()
+    
+    # 1. Общая выручка
+    cursor.execute('SELECT SUM(amount) FROM sales')
+    total_revenue = cursor.fetchone()[0]
+    print(f"Общая выручка: {total_revenue:.2f} руб.")
+    
+    # 2. Выручка по категориям (GROUP BY)
+    print("\nВыручка по категориям:")
+    cursor.execute('''
+        SELECT category, SUM(amount), COUNT(*)
+        FROM sales 
+        GROUP BY category
+    ''')
+    for category, total, count in cursor.fetchall():
+        print(f"  {category}: {total:.2f} руб. ({count} продаж)")
+    
+    # 3. Товары с продажами > 30000 (HAVING)
+    print("\nКрупные продажи (>30000 руб.):")
+    cursor.execute('''
+        SELECT product, SUM(amount)
+        FROM sales 
+        GROUP BY product
+        HAVING SUM(amount) > 30000
+    ''')
+    for product, total in cursor.fetchall():
+        print(f"  {product}: {total:.2f} руб.")
 
+if __name__ == "__main__":
+    conn = sqlite3.connect('sales.db')
+    setup_sales_data(conn)
+    run_sales_analysis(conn)
+    conn.close()
+```
+Пример 3: Продвинутые запросы с JOIN и подзапросами
+Демонстрирует работу со связанными таблицами и сложными запросами.
 
+```python
+import sqlite3
+
+def create_related_tables(conn):
+    cursor = conn.cursor()
+    
+    # Таблица сотрудников
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS employees (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            department_id INTEGER
+        )
+    ''')
+    
+    # Таблица отделов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS departments (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            budget REAL
+        )
+    ''')
+    
+    # Тестовые данные
+    cursor.execute("DELETE FROM departments")
+    cursor.execute("DELETE FROM employees")
+    
+    departments = [(1, 'IT', 100000), (2, 'Sales', 80000)]
+    employees = [
+        (1, 'Алексей', 1), 
+        (2, 'Мария', 2), 
+        (3, 'Дмитрий', 1),
+        (4, 'Ольга', 2)
+    ]
+    
+    cursor.executemany('INSERT INTO departments VALUES (?, ?, ?)', departments)
+    cursor.executemany('INSERT INTO employees VALUES (?, ?, ?)', employees)
+    conn.commit()
+
+def run_advanced_queries(conn):
+    cursor = conn.cursor()
+    
+    # INNER JOIN: сотрудники с названиями отделов
+    print("Сотрудники и их отделы:")
+    cursor.execute('''
+        SELECT e.name, d.name 
+        FROM employees e
+        JOIN departments d ON e.department_id = d.id
+    ''')
+    for employee_name, department_name in cursor.fetchall():
+        print(f"  {employee_name} -> {department_name}")
+    
+    # Подзапрос: сотрудники отдела с максимальным бюджетом
+    print("\nСотрудники в самом богатом отделе:")
+    cursor.execute('''
+        SELECT e.name 
+        FROM employees e
+        WHERE e.department_id = (
+            SELECT id FROM departments 
+            ORDER BY budget DESC 
+            LIMIT 1
+        )
+    ''')
+    for (employee_name,) in cursor.fetchall():
+        print(f"  {employee_name}")
+
+if __name__ == "__main__":
+    conn = sqlite3.connect('company.db')
+    create_related_tables(conn)
+    run_advanced_queries(conn)
+    conn.close()
+```
+Пример 4: Интеграция Pandas и SQL для анализа
+Показывает мощь связки Pandas + SQL для анализа и визуализации данных.
+
+```python
+import sqlite3
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def analyze_with_pandas():
+    # Подключение к БД через Pandas
+    conn = sqlite3.connect('sales.db')
+    
+    # Чтение данных прямо в DataFrame
+    df = pd.read_sql_query("SELECT * FROM sales", conn)
+    
+    print("Данные из БД:")
+    print(df.head())
+    
+    # Анализ средствами Pandas
+    print("\nСтатистика по продажам:")
+    print(df['amount'].describe())
+    
+    # Группировка и агрегация
+    category_stats = df.groupby('category')['amount'].agg(['sum', 'mean', 'count'])
+    print(f"\nСтатистика по категориям:\n{category_stats}")
+    
+    # Визуализация
+    df.groupby('category')['amount'].sum().plot(kind='bar', title='Выручка по категориям')
+    plt.ylabel('Сумма (руб.)')
+    plt.show()
+    
+    conn.close()
+
+if __name__ == "__main__":
+    analyze_with_pandas()
+```
+Пример 5: Практический проект — Анализ эффективности маркетинга
+Мини-проект, объединяющий несколько техник для решения бизнес-задачи.
+
+```python
+import sqlite3
+import pandas as pd
+from datetime import datetime, timedelta
+
+def setup_marketing_data(conn):
+    cursor = conn.cursor()
+    
+    # Таблица рекламных кампаний
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS campaigns (
+            campaign_id INTEGER PRIMARY KEY,
+            name TEXT,
+            cost REAL,
+            start_date DATE
+        )
+    ''')
+    
+    # Таблица конверсий
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS conversions (
+            conversion_id INTEGER PRIMARY KEY,
+            campaign_id INTEGER,
+            revenue REAL,
+            conversion_date DATE,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns (campaign_id)
+        )
+    ''')
+    
+    # Генерация тестовых данных
+    cursor.execute("DELETE FROM campaigns")
+    cursor.execute("DELETE FROM conversions")
+    
+    campaigns = [
+        (1, 'Кампания в соцсетях', 5000, '2024-01-01'),
+        (2, 'Email-рассылка', 3000, '2024-01-05'),
+    ]
+    
+    conversions_data = [
+        (1, 1, 15000, '2024-01-02'),
+        (2, 1, 8000, '2024-01-03'),
+        (3, 2, 12000, '2024-01-06'),
+        (4, 1, 7000, '2024-01-08'),
+    ]
+    
+    cursor.executemany('INSERT INTO campaigns VALUES (?, ?, ?, ?)', campaigns)
+    cursor.executemany('INSERT INTO conversions VALUES (?, ?, ?, ?)', conversions_data)
+    conn.commit()
+
+def calculate_roi(conn):
+    """Расчет ROI для маркетинговых кампаний"""
+    
+    query = '''
+    SELECT 
+        c.name AS campaign_name,
+        c.cost,
+        SUM(conv.revenue) AS total_revenue,
+        (SUM(conv.revenue) - c.cost) AS net_profit,
+        ROUND((SUM(conv.revenue) - c.cost) / c.cost * 100, 2) AS roi_percent
+    FROM campaigns c
+    LEFT JOIN conversions conv ON c.campaign_id = conv.campaign_id
+    GROUP BY c.campaign_id
+    HAVING total_revenue > 0
+    ORDER BY roi_percent DESC
+    '''
+    
+    df = pd.read_sql_query(query, conn)
+    
+    print("Эффективность маркетинговых кампаний:")
+    print(df.to_string(index=False))
+    
+    # Дополнительный анализ
+    print(f"\nОбщая ROI всех кампаний: {df['net_profit'].sum() / df['cost'].sum() * 100:.1f}%")
+    
+    return df
+
+if __name__ == "__main__":
+    conn = sqlite3.connect('marketing.db')
+    setup_marketing_data(conn)
+    roi_df = calculate_roi(conn)
+    conn.close()
+```
+```
+Ключевые навыки, которые охватывают эти примеры:
+Основы SQLite в Python - подключение, выполнение запросов, управление транзакциями
+SQL операции - CRUD, агрегации, GROUP BY, HAVING, JOIN, подзапросы
+Работа с Pandas - чтение SQL в DataFrame, анализ и визуализация
+Структуры данных Python - списки, кортежи, словари (в передаче параметров)
+Функции и чистая логика - каждая задача в отдельной функции
+Аналитическое мышление - от сырых данных к бизнес-метрикам (ROI, эффективность)
+Практические кейсы - анализ продаж, маркетинговой эффективности
 ```
