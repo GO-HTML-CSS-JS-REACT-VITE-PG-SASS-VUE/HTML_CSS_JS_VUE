@@ -3,680 +3,644 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поступление в ВУЗы</title>
-    
+    <title>Калькулятор поступления в ВУЗ</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js"></script>
     <style>
-        /* ==================================== */
-        /*           CSS СТИЛИ НАЧАЛО           */
-        /* ==================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #eef2f7;
-            color: #333;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
 
-        header {
-            background-color: #0056b3;
-            color: #fff;
-            padding: 1.5rem 0;
+        #app {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: white;
+            margin-bottom: 30px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        header p {
-            margin: 0.5rem 0 0;
-            font-size: 1.1rem;
+        .header p {
+            font-size: 1.1em;
             opacity: 0.9;
         }
 
-        main {
-            max-width: 960px;
-            margin: 30px auto;
-            padding: 25px;
-            background-color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            flex-grow: 1;
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        section {
-            margin-bottom: 35px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #e0e0e0;
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
         }
 
-        section:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        h1, h2, h3 {
-            color: #004085;
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        h2 {
-            font-size: 2rem;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Формы и элементы ввода */
         .form-group {
             margin-bottom: 20px;
         }
 
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
         }
 
-        input[type="number"],
-        input[type="text"] {
-            width: calc(100% - 24px); /* Учитываем padding */
+        .form-group input, .form-group select {
+            width: 100%;
             padding: 12px;
-            border: 1px solid #ccc;
-                        border-radius: 6px;
-            box-sizing: border-box; /* Учитывает padding и border в ширине */
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
 
-        input[type="number"]:focus,
-        input[type="text"]:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        .form-group input:focus, .form-group select:focus {
             outline: none;
+            border-color: #667eea;
         }
 
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        button:hover:not(:disabled) {
-            background-color: #0056b3;
+        .achievement-tag {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .achievement-tag button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            background-color: #cccccc;
+        .btn:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* Сообщения и результаты */
-        .message {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 1rem;
-            background-color: #e9f7ef;
-            border: 1px solid #d4edda;
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-left: 10px;
+        }
+
+        .university-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .university-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s;
+        }
+
+        .university-card:hover {
+            transform: translateX(5px);
+        }
+
+        .university-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .university-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-info {
+            color: #666;
+        }
+
+        .chance-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .chance-high {
+            background: #d4edda;
             color: #155724;
         }
 
-        .message.error {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
+        .chance-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .chance-low {
+            background: #f8d7da;
             color: #721c24;
         }
 
-        .results-display {
-            margin-top: 25px;
-            padding: 20px;
-            border: 1px dashed #b8daff;
-            background-color: #f0f8ff;
-            border-radius: 8px;
-            min-height: 60px;
-            font-size: 1rem;
-        }
-
-        .results-display p {
-            margin-bottom: 8px;
-        }
-
-        /* Стили для выбора ВУЗов */
-        .search-dropdown {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            max-height: 250px;
-            overflow-y: auto;
-            margin-top: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: relative; 
-            z-index: 1000; 
-        }
-
-        .search-dropdown:empty {
-            border: none;
-            box-shadow: none;
-        }
-
-        .search-item {
-            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s ease;
-        }
-
-        .search-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-item:hover {
-            background-color: #eef2f7;
-        }
-
-        #selected-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
-
-        #selected-list li {
-            background-color: #e2e6ea;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
+        .tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.05rem;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .remove-uni {
-            background-color: #dc3545;
-            color: white;
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
             border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 0.9rem;
+            color: #666;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
         }
 
-        .remove-uni:hover {
-            background-color: #c82333;
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
         }
 
-        /* Стиль для шансов */
-        .chance-high { color: #28a745; font-weight: bold; } /* Green */
-        .chance-medium { color: #ffc107; font-weight: bold; } /* Yellow/Orange */
-        .chance-low { color: #dc3545; } /* Red */
-        .chance-info { color: #17a2b8; } /* Blue/Cyan */
-        .chance-error { color: #dc3545; } /* Red for error messages */
-
-
-        foot            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s ease;
-        }
-
-        .search-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-item:hover {
-            background-color: #eef2f7;
-        }
-
-        #selected-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
-
-        #selected-list li {
-            background-color: #e2e6ea;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.05rem;
-        }
-
-        .remove-uni {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .remove-uni:hover {
-            background-color: #c82333;
-        }
-
-        /* Стиль для шансов */
-        .chance-high { color: #28a745; font-weight: bold; } /* Green */
-        .chance-medium { color: #ffc107; font-weight: bold; } /* Yellow/Orange */
-        .chance-low { color: #dc3545; } /* Red */
-        .chance-info { color: #17a2b8; } /* Blue/Cyan */
-        .chance-error { color: #dc3545; } /* Red for error messages */
-
-
-        footer {
+        .empty-state {
             text-align: center;
-            padding: 25px;
-            margin-top: 30px;
-            background-color: #0056b3;
-            color: #fff;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            color: #999;
         }
 
-        /* Адаптивность (базовая) */
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .selected-unis {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .selected-uni-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selected-uni-tag button {
+            background: rgba(25, 118, 210, 0.2);
+            border: none;
+            color: #1976d2;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .add-achievement {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-achievement input {
+            flex: 1;
+        }
+
         @media (max-width: 768px) {
-            main {
-                margin: 15px;
-                padding: 15px;
+            .header h1 {
+                font-size: 1.8em;
             }
-            header h1 {
-                font-size: 2rem;
+
+            .card {
+                padding: 20px;
             }
-            h2 {
-                font-size: 1.7rem;
+
+            .exam-grid {
+                grid-template-columns: 1fr;
             }
-            input[type="number"],
-            input[type="text"] {
-                width: calc(100% - 20px);
+
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 10px;
             }
         }
-        /* ==================================== */
-        /*            CSS СТИЛИ КОНЕЦ           */
-        /* ==================================== */
     </style>
 </head>
 <body>
-    <header>
-        <h1>Поиск и оценка шансов на поступление в ВУЗ</h1>
-        <p>Ваши данные строго анонимны и сохраняются только в браузере.</p>
-    </header>
+    <div id="app">
+        <div class="header">
+            <h1>🎓 Калькулятор поступления в ВУЗ</h1>
+            <p>Анонимный расчет ваших шансов на поступление</p>
+        </div>
 
-    <main>
-        <section id="personal-data">
-            <h2>1. Ваши данные ЕГЭ и достижения</h2>
-            <form id="ege-form">
+        <div class="card">
+            <h2>Личные данные</h2>
+            <p style="color: #666; margin-bottom: 20px;">Все данные сохраняются только в вашем браузере и полностью анонимны</p>
+            
+            <div class="exam-grid">
                 <div class="form-group">
-                    <label for="ege-math">Математика (профиль):</label>
-                    <input type="number" id="ege-math" min="0" max="100" placeholder="Баллы" required>
+                    <label>Русский язык (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.russian" min="0" max="100" placeholder="0-100">
                 </div>
                 <div class="form-group">
-                    <label for="ege-rus">Русский язык:</label>
-                    <input type="number" id="ege-rus" min="0" max="100" placeholder="Баллы" required>
+                    <label>Математика (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.math" min="0" max="100" placeholder="0-100">
                 </div>
                 <div class="form-group">
-                    <label for="ege-phys">Доп. предмет (напр., Физика/Информатика):</label>
-                    <input type="number" id="ege-phys" min="0" max="100" placeholder="Баллы" required>
+                    <label>Обществознание (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.social" min="0" max="100" placeholder="0-100">
                 </div>
                 <div class="form-group">
-                    <label for="achievements">Баллы за личные достижения (до 10 баллов):</label>
-                    <input type="number" id="achievements" min="0" max="10" placeholder="Баллы">
+                    <label>Физика (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.physics" min="0" max="100" placeholder="0-100">
                 </div>
-                <button type="submit">Сохранить данные в Cookies</button>
-            </form>
-            <div id="data-status" class="message"></div>
-        </section>
+                <div class="form-group">
+                    <label>Информатика (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.informatics" min="0" max="100" placeholder="0-100">
+                </div>
+                <div class="form-group">
+                    <label>Иностранный язык (ЕГЭ)</label>
+                    <input type="number" v-model.number="userData.exams.foreign" min="0" max="100" placeholder="0-100">
+                </div>
+            </div>
 
-        <section id="choose-universities">
-            <h2>2. Выберите 5 ВУЗов для оценки</h2>
-            <p>Начните вводить название ВУЗа или специальности. Выбрано: <span id="selected-count">0</span>/5</p>
-            <div class="form-group">
-                <label for="university-search">Поиск ВУЗа/Специальности:</label>
-                <input type="text" id="university-search" placeholder="Например: МГУ, Информатика">
+            <div class="form-group" style="margin-top: 20px;">
+                <label>Личные достижения (каждое до 10 баллов)</label>
+                <div class="add-achievement">
+                    <input type="text" v-model="newAchievement.name" placeholder="Название достижения">
+                    <input type="number" v-model.number="newAchievement.points" min="1" max="10" placeholder="Баллы" style="max-width: 100px;">
+                    <button class="btn" @click="addAchievement">Добавить</button>
+                </div>
+                <div class="achievements">
+                    <div class="achievement-tag" v-for="(ach, idx) in userData.achievements" :key="idx">
+                        {{ ach.name }} (+{{ ach.points }})
+                        <button @click="removeAchievement(idx)">×</button>
+                    </div>
+                </div>
             </div>
-            <div id="search-results" class="search-dropdown">
-                <!-- Результаты поиска будут добавляться здесь через JS -->
-            </div>
-            <div id="selected-universities">
-                <h3>Выбранные ВУЗы:</h3>
-                <ul id="selected-list">
-                    <!-- Выбранные ВУЗы будут здесь -->
-                </ul>
-                <button id="calculate-chances" disabled>Рассчитать шансы</button>
-            </div>
-            <div id="chances-results" class="results-display">
-                <!-- Результаты расчета шансов будут здесь -->
-            </div>
-        </section>
 
-        <section id="find-all-universities">
-            <h2>3. Найти все возможные ВУЗы</h2>
-            <p>Оценим ваши шансы во всех доступных ВУЗах и покажем 10 лучших вариантов.</p>
-            <button id="find-all-chances">Найти лучшие варианты</button>
-            <div id="all-chances-results" class="results-display">
-                <!-- Результаты поиска по всем ВУЗам будут здесь -->
+            <div style="margin-top: 20px;">
+                <strong>Общий балл: {{ totalScore }}</strong>
             </div>
-        </section>
-    </main>
+        </div>
 
-    <footer>
-        <p>&copy; 2023. Анонимный помощник абитуриента.</p>
-    </footer>
+        <div class="card">
+            <div class="tabs">
+                <button class="tab" :class="{active: activeTab === 'selected'}" @click="activeTab = 'selected'">
+                    Мои 5 ВУЗов
+                </button>
+                <button class="tab" :class="{active: activeTab === 'all'}" @click="activeTab = 'all'">
+                    Все доступные ВУЗы
+                </button>
+            </div>
+
+            <div v-if="activeTab === 'selected'">
+                <h2>Выберите до 5 ВУЗов</h2>
+                <div class="form-group">
+                    <select v-model="selectedUniversity" @change="addSelectedUniversity">
+                        <option value="">-- Выберите ВУЗ --</option>
+                        <option v-for="uni in availableUniversities" :key="uni.id" :value="uni.id">
+                            {{ uni.name }} (мин. {{ uni.minScore }})
+                        </option>
+                    </select>
+                </div>
+
+                <div class="selected-unis" v-if="selectedUniversities.length > 0">
+                    <div class="selected-uni-tag" v-for="uniId in selectedUniversities" :key="uniId">
+                        {{ getUniversityById(uniId).name }}
+                        <button @click="removeSelectedUniversity(uniId)">×</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn" @click="calculateChances" :disabled="selectedUniversities.length === 0">
+                        Рассчитать шансы
+                    </button>
+                </div>
+
+                <div v-if="calculatedChances.length > 0" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Ваши шансы на поступление:</h3>
+                    <div class="university-list">
+                        <div class="university-card" v-for="result in calculatedChances" :key="result.university.id">
+                            <div class="university-name">{{ result.university.name }}</div>
+                            <div class="university-info">
+                                <div class="score-info">
+                                    Проходной балл 2024: {{ result.university.passingScore2024 }}<br>
+                                    Ваш балл: {{ totalScore }}
+                                </div>
+                                <span class="chance-badge" :class="getChanceClass(result.chance)">
+                                    {{ result.chanceText }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else-if="selectedUniversities.length === 0" class="empty-state">
+                    <p>Выберите ВУЗы для расчета шансов</p>
+                </div>
+            </div>
+
+            <div v-if="activeTab === 'all'">
+                <h2>Топ-10 ВУЗов по вероятности поступления</h2>
+                <p style="color: #666; margin-bottom: 20px;">На основе ваших баллов</p>
+                
+                <button class="btn" @click="findBestUniversities">
+                    Найти лучшие варианты
+                </button>
+
+                <div v-if="bestUniversities.length > 0" style="margin-top: 30px;">
+                    <div class="university-list">
+                        <div class="university-card" v-for="(result, idx) in bestUniversities" :key="result.university.id">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="font-size: 1.5em; font-weight: bold; color: #667eea; min-width: 30px;">
+                                    {{ idx + 1 }}
+                                </div>
+                                <div style="flex: 1;">
+                                    <div class="university-name">{{ result.university.name }}</div>
+                                    <div class="university-info">
+                                        <div class="score-info">
+                                            Проходной балл: {{ result.university.passingScore2024 }} | 
+                                            Ваш балл: {{ totalScore }} 
+                                            (запас +{{ totalScore - result.university.passingScore2024 }})
+                                        </div>
+                                        <span class="chance-badge" :class="getChanceClass(result.chance)">
+                                            {{ result.chanceText }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="empty-state">
+                    <p>Нажмите кнопку для поиска лучших вариантов</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        /* ==================================== */
-        /*          JAVASCRIPT НАЧАЛО           */
-        /* ==================================== */
+        const { createApp } = Vue;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. Загрузка личных данных (ЕГЭ и достижения) ---
-            const egeForm = document.getElementById('ege-form');
-            const dataStatus = document.getElementById('data-status');
-            const egeMathInput = document.getElementById('ege-math');
-            const egeRusInput = document.getElementById('ege-rus');
-            const egePhysInput = document.getElementById('ege-phys');
-            const achievementsInput = document.getElementById('achievements');
-
-            // Функция для сохранения данных в cookies
-            function saveUserData(egeMath, egeRus, egePhys, achievements) {
-                const userData = {
-                    egeMath: egeMath,
-                    egeRus: egeRus,
-                    egePhys: egePhys,
-                    achievements: achievements
-                };
-                // Сохраняем как JSON-строку в cookie
-                // Срок действия - 30 дней, доступно на всем сайте
-                document.cookie = `userData=${encodeURIComponent(JSON.stringify(userData))}; expires=${new Date(Date.now() + 86400000 * 30).toUTCString()}; path=/`; 
-                dataStatus.textContent = 'Данные успешно сохранены в Cookies.';
-                dataStatus.classList.remove('error');
-            }
-
-            // Функция для загрузки данных из cookies
-            function loadUserData() {
-                const cookies = document.cookie.split('; ').find(row => row.trim().startsWith('userData='));
-                if (cookies) {
-                    try {
-                        const userData = JSON.parse(decodeURIComponent(cookies.split('=')[1]));
-                        egeMathInput.value = userData.egeMath || '';
-                        egeRusInput.value = userData.egeRus || '';
-                        egePhysInput.value = userData.egePhys || '';
-                        achievementsInput.value = userData.achievements || '';
-                        dataStatus.textContent = 'Данные загружены из Cookies.';
-                        dataStatus.classList.remove('error');
-                        return userData;
-                    } catch (e) {
-                        console.error("Ошибка при парсинге cookies:", e);
-                        dataStatus.textContent = 'Ошибка при загрузке данных из Cookies.';
-                        dataStatus.classList.add('error');
-                        return null;
-                    }
+        createApp({
+            data() {
+                return {
+                    activeTab: 'selected',
+                    userData: {
+                        exams: {
+                            russian: 0,
+                            math: 0,
+                            social: 0,
+                            physics: 0,
+                            informatics: 0,
+                            foreign: 0
+                        },
+                        achievements: []
+                    },
+                    newAchievement: {
+                        name: '',
+                        points: 0
+                    },
+                    universities: [
+                        { id: 1, name: 'МГУ им. Ломоносова', minScore: 250, passingScore2024: 385, places: 500 },
+                        { id: 2, name: 'СПбГУ', minScore: 240, passingScore2024: 370, places: 450 },
+                        { id: 3, name: 'МФТИ', minScore: 245, passingScore2024: 380, places: 400 },
+                        { id: 4, name: 'ВШЭ', minScore: 235, passingScore2024: 360, places: 600 },
+                        { id: 5, name: 'МГТУ им. Баумана', minScore: 230, passingScore2024: 350, places: 550 },
+                        { id: 6, name: 'ИТМО', minScore: 225, passingScore2024: 345, places: 500 },
+                        { id: 7, name: 'Казанский федеральный', minScore: 215, passingScore2024: 320, places: 700 },
+                        { id: 8, name: 'УрФУ', minScore: 210, passingScore2024: 310, places: 650 },
+                        { id: 9, name: 'Томский политехнический', minScore: 205, passingScore2024: 305, places: 600 },
+                        { id: 10, name: 'Новосибирский государственный', minScore: 200, passingScore2024: 300, places: 550 },
+                        { id: 11, name: 'Южный федеральный', minScore: 195, passingScore2024: 290, places: 500 },
+                        { id: 12, name: 'Дальневосточный федеральный', minScore: 190, passingScore2024: 280, places: 450 },
+                        { id: 13, name: 'РЭУ им. Плеханова', minScore: 220, passingScore2024: 330, places: 400 },
+                        { id: 14, name: 'РУДН', minScore: 210, passingScore2024: 315, places: 500 },
+                        { id: 15, name: 'Финансовый университет', minScore: 215, passingScore2024: 325, places: 450 }
+                    ],
+                    selectedUniversities: [],
+                    selectedUniversity: '',
+                    calculatedChances: [],
+                    bestUniversities: []
                 }
-                return null;
-            }
-
-            // Загружаем данные при загрузке страницы
-            let currentUserData = loadUserData();
-
-            egeForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const egeMath = parseInt(egeMathInput.value);
-                const egeRus = parseInt(egeRusInput.value);
-                const egePhys = parseInt(egePhysInput.value);
-                const achievements = parseInt(achievementsInput.value) || 0; // Если пусто, то 0
-
-                // Простая валидация
-                if (isNaN(egeMath) || isNaN(egeRus) || isNaN(egePhys) || isNaN(achievements) ||
-                    egeMath < 0 || egeMath > 100 ||
-                    egeRus < 0 || egeRus > 100 ||
-                    egePhys < 0 || egePhys > 100 ||
-                    achievements < 0 || achievements> 10) {
-                    dataStatus.textContent = 'Пожалуйста, введите корректные баллы (ЕГЭ 0-100, Достижения 0-10).';
-                    dataStatus.classList.add('error');
-                } else {
-                    saveUserData(egeMath, egeRus, egePhys, achievements);
-                    currentUserData = { egeMath, egeRus, egePhys, achievements };
-                    updateSelectedCount(); // Обновить состояние кнопки "Рассчитать шансы"
+            },
+            computed: {
+                totalScore() {
+                    const examScore = this.userData.exams.russian + 
+                                    this.userData.exams.math + 
+                                    this.userData.exams.social +
+                                    this.userData.exams.physics +
+                                    this.userData.exams.informatics +
+                                    this.userData.exams.foreign;
+                    const achievementScore = this.userData.achievements.reduce((sum, ach) => sum + ach.points, 0);
+                    return examScore + Math.min(achievementScore, 10);
+                },
+                availableUniversities() {
+                    return this.universities.filter(uni => 
+                        !this.selectedUniversities.includes(uni.id)
+                    );
                 }
-            });
-
-            // --- 2. Выбор 5 вузов и расчет шансов ---
-            const universitySearchInput = document.getElementById('university-search');
-            const searchResultsDiv = document.getElementById('search-results');
-            const selectedUniversitiesList = document.getElementById('selected-list');
-            const selectedCountSpan = document.getElementById('selected-count');
-            const calculateChancesButton = document.getElementById('calculate-chances');
-            const chancesResultsDiv = document.getElementById('chances-results');
-
-            let selectedUniversities = []; // Хранит {id: 'uni1', name: 'МГУ - Информатика'}
-
-            // Имитация базы данных ВУЗов (на реальном сайте это был бы API-запрос к бэкенду)
-            // minScore - это условный проходной балл прошлых лет
-            // places - примерное количество бюджетных мест (для более сложной логики)
-            // isAccepting - имитация периода подачи заявок
-            const mockUniversitiesDB = [
-                { id: 'uni1', name: 'МГУ - Информатика', minScore: 280, places: 100, isAccepting: true },
-                { id: 'uni2', name: 'МГУ - Физика', minScore: 260, places: 120, isAccepting: false }, // ВУЗ не принимает сейчас
-                { id: 'uni3', name: 'ВШЭ - Анализ данных', minScore: 290, places: 80, isAccepting: true },
-                { id: 'uni4', name: 'СПбГУ - Программирование', minScore: 275, places: 90, isAccepting: true },
-                { id: 'uni5', name: 'МИФИ - Кибербезопасность', minScore: 265, places: 150, isAccepting: true },
-                { id: 'uni6', name: 'МГТУ Баумана - Робототехника', minScore: 270, places: 110, isAccepting: true },
-                { id: 'uni7', name: 'ИТМО - Искусственный интеллект', minScore: 285, places: 70, isAccepting: true },
-                { id: 'uni8', name: 'РУДН - Лингвистика', minScore: 240, places: 200, isAccepting: true },
-                { id: 'uni9', name: 'МГУ - Мехмат', minScore: 278, places: 130, isAccepting: true },
-                { id: 'uni10', name: 'ВШЭ - Экономика', minScore: 282, places: 95, isAccepting: true },
-                { id: 'uni11', name: 'СПбГУ - Математика', minScore: 270, places: 100, isAccepting: true },
-                { id: 'uni12', name: 'МИЭТ - Электроника', minScore: 250, places: 180, isAccepting: true },
-                { id: 'uni13', name: 'КФУ - Химия', minScore: 230, places: 150, isAccepting: true },
-                { id: 'uni14', name: 'РГУ нефти и газа - Геология', minScore: 255, places: 110, isAccepting: true },
-                { id: 'uni15', name: 'УрФУ - Металлургия', minScore: 220, places: 130, isAccepting: true }
-            ];
-
-            function updateSelectedCount() {
-                selectedCountSpan.textContent = selectedUniversities.length;
-                calculateChancesButton.disabled = selectedUniversities.length === 0 || !currentUserData;
-            }
-
-            // Обработка поиска ВУЗа
-            universitySearchInput.addEventListener('input', () => {
-                const query = universitySearchInput.value.toLowerCase().trim();
-                searchResultsDiv.innerHTML = ''; // Очищаем предыдущие результаты
-                if (query.length < 2) {
-                    searchResultsDiv.classList.remove('active'); // Скрыть dropdown
-                    return;
-                }
-
-                const results = mockUniversitiesDB.filter(uni =>uni.name.toLowerCase().includes(query)
-                ).slice(0, 10); // Показываем до 10 результатов
-
-                if (results.length > 0) {
-                    searchResultsDiv.classList.add('active'); // Показать dropdown
-                    results.forEach(uni => {
-                        const item = document.createElement('div');
-                        item.classList.add('search-item');
-                        item.textContent = uni.name;
-                        item.dataset.uniId = uni.id;
-                        item.dataset.uniName = uni.name;
-                        item.addEventListener('click', () => {
-                            if (selectedUniversities.length < 5 && !selectedUniversities.some(sUni => sUni.id === uni.id)) {
-                                selectedUniversities.push({ id: uni.id, name: uni.name });
-                                renderSelectedUniversities();
-                                universitySearchInput.value = ''; // Очистить поле поиска
-                                searchResultsDiv.innerHTML = ''; // Скрыть результаты поиска
-                                searchResultsDiv.classList.remove('active');
-                            } else if (selectedUniversities.some(sUni => sUni.id === uni.id)) {
-                                alert('Этот ВУЗ уже выбран!');
-                            } else {
-                                alert('Вы можете выбрать не более 5 ВУЗов.');
-                            }
+            },
+            methods: {
+                addAchievement() {
+                    if (this.newAchievement.name && this.newAchievement.points > 0) {
+                        this.userData.achievements.push({
+                            name: this.newAchievement.name,
+                            points: Math.min(this.newAchievement.points, 10)
                         });
-                        searchResultsDiv.appendChild(item);
-                    });
-                } else {
-                    searchResultsDiv.classList.remove('active');
-                }
-            });
-
-            // Рендеринг выбранных ВУЗов
-            function renderSelectedUniversities() {
-                selectedUniversitiesList.innerHTML = '';
-                selectedUniversities.forEach(uni => {
-                    const li = document.createElement('li');
-                    li.textContent = uni.name;
-                    const removeBtn = document.createElement('button');
-                    removeBtn.classList.add('remove-uni');
-                    removeBtn.textContent = 'Удалить';
-                    removeBtn.addEventListener('click', () => {
-                        selectedUniversities = selectedUniversities.filter(sUni => sUni.id !== uni.id);
-                        renderSelectedUniversities();
-                    });
-                    li.appendChild(removeBtn);
-                    selectedUniversitiesList.appendChild(li);
-                });
-                updateSelectedCount();
-            }
-
-            // Функция расчета шансов (имитация)
-            function calculateChance(userData, university) {
-                if (!userData) return { text: "Нет данных ЕГЭ", chance: 0, status: 'error' };
-                const totalEGE = userData.egeMath + userData.egeRus + userData.egePhys;
-                const totalScore = totalEGE + userData.achievements;
-
-                let chance = 0;
-                let text = '';
-                let status = 'neutral';
-
-                if (!university.isAccepting) {
-                    text = `ВУЗ "${university.name}" сейчас не принимает заявления.`;
-                    status = 'info';
-                    chance = -1; // Специальное значение для "не принимает"
-                } else if (totalScore >= university.minScore) {
-                    const diff = totalScore - university.minScore;
-                    if (diff >= 20) { // Если намного выше проходного
-                        chance = 90 + Math.min(10, diff / 5); // До 100%
-                        text = `Очень высокие шансы (${totalScore} баллов)`;
-                    } else if (diff >= 0) { // Если на уровне или немного выше
-                        chance = 70 + diff * 1.5; // От 70 до 90%
-                        text = `Хорошие шансы (${totalScore} баллов)`;
+                        this.newAchievement = { name: '', points: 0 };
+                        this.saveToCookies();
                     }
-                    status = 'high';
-                } else { // Если баллов меньше проходного
-                    const diff = university.minScore - totalScore;
-                    if (diff <= 10) { // Если не сильно ниже
-                        chance = 40 + (10 - diff) * 3; // От 40 до 70%
-                        text = `Средние шансы (${totalScore} баллов). Нужно до ${university.minScore}`;
-                        status = 'medium';
-                    } else { // Если значительно ниже
-                        chance = Math.max(5, (totalScore / university.minScore) * 60); // От 5% до 40%
-                        text = `Низкие шансы (${totalScore} баллов). Проходной: ${university.minScore}`;
-                        status = 'low';
+                },
+                removeAchievement(idx) {
+                    this.userData.achievements.splice(idx, 1);
+                    this.saveToCookies();
+                },
+                addSelectedUniversity() {
+                    if (this.selectedUniversity && this.selectedUniversities.length < 5) {
+                        this.selectedUniversities.push(parseInt(this.selectedUniversity));
+                        this.selectedUniversity = '';
+                        this.saveToCookies();
                     }
-                }
-                return { text: text, chance: parseFloat(chance.toFixed(1)), status: status };
-            }
-
-            calculateChancesButton.addEventListener('click', () => {
-                if (!currentUserData) {
-                    chancesResultsDiv.innerHTML = '<p class="message error">Пожалуйста, сохраните ваши данные ЕГЭ и достижений.</p>';
-                    return;
-                }
-                if (selectedUniversities.length === 0) {
-                    chancesResultsDiv.innerHTML = '<p class="message error">Выберите хотя бы один ВУЗ.</p>';
-                    return;
-                }
-
-                chancesResultsDiv.innerHTML = '<h3>Ваши шансы:</h3>';
-                selectedUniversities.forEach(selectedUni => {
-                    const uniDetails = mockUniversitiesDB.find(u => u.id === selectedUni.id);
-                    if (uniDetails) {
-                        const result = calculateChance(currentUserData, uniDetails);
-                        const p = document.createElement('p');
-                        p.classList.add(`chance-${result.status}`); // Для стилизации в зависимости от шансов
-                        if (result.chance !== -1) { // Если вуз принимает заявления
-                            p.textContent = `${uniDetails.name}: ${result.text} (Вероятность: ${result.chance.toFixed(1)}%)`;
-                        } else { // Если вуз не принимает заявления
-                            p.textContent = `${uniDetails.name}: ${result.text}`;
+                },
+                removeSelectedUniversity(uniId) {
+                    const idx = this.selectedUniversities.indexOf(uniId);
+                    if (idx > -1) {
+                        this.selectedUniversities.splice(idx, 1);
+                        this.saveToCookies();
+                    }
+                },
+                getUniversityById(id) {
+                    return this.universities.find(uni => uni.id === id);
+                },
+                calculateChances() {
+                    this.calculatedChances = this.selectedUniversities.map(uniId => {
+                        const university = this.getUniversityById(uniId);
+                        const diff = this.totalScore - university.passingScore2024;
+                        
+                        let chance, chanceText;
+                        if (diff >= 20) {
+                            chance = 'high';
+                            chanceText = 'Высокие шансы';
+                        } else if (diff >= 0) {
+                            chance = 'medium';
+                            chanceText = 'Средние шансы';
+                        } else if (diff >= -15) {
+                            chance = 'low';
+                            chanceText = 'Низкие шансы';
+                        } else {
+                            chance = 'low';
+                            chanceText = 'Очень низкие шансы';
                         }
-                        chancesResultsDiv.appendChild(p);
+
+                        return {
+                            university,
+                            chance,
+                            chanceText,
+                            diff
+                        };
+                    }).sort((a, b) => b.diff - a.diff);
+                },
+                findBestUniversities() {
+                    const eligible = this.universities.filter(uni => 
+                        this.totalScore >= uni.minScore
+                    ).map(university => {
+                        const diff = this.totalScore - university.passingScore2024;
+                        
+                        let chance, chanceText;
+                        if (diff >= 20) {
+                            chance = 'high';
+                            chanceText = 'Высокие шансы';
+                        } else if (diff >= 0) {
+                            chance = 'medium';
+                            chanceText = 'Средние шансы';
+                        } else {
+                            chance = 'low';
+                            chanceText = 'Шансы есть';
+                        }
+
+                        return {
+                            university,
+                            chance,
+                            chanceText,
+                            diff
+                        };
+                    }).sort((a, b) => b.diff - a.diff);
+
+                    this.bestUniversities = eligible.slice(0, 10);
+                },
+                getChanceClass(chance) {
+                    return {
+                        'chance-high': chance === 'high',
+                        'chance-medium': chance === 'medium',
+                        'chance-low': chance === 'low'
+                    };
+                },
+                saveToCookies() {
+                    const data = {
+                        userData: this.userData,
+                        selectedUniversities: this.selectedUniversities
+                    };
+                    document.cookie = `admissionData=${encodeURIComponent(JSON.stringify(data))}; max-age=31536000; path=/`;
+                },
+                loadFromCookies() {
+                    const cookies = document.cookie.split('; ');
+                    const admissionCookie = cookies.find(c => c.startsWith('admissionData='));
+                    if (admissionCookie) {
+                        try {
+                            const data = JSON.parse(decodeURIComponent(admissionCookie.split('=')[1]));
+                            this.userData = data.userData || this.userData;
+                            this.selectedUniversities = data.selectedUniversities || [];
+                        } catch (e) {
+                            console.error('Ошибка загрузки данных из cookies');
+                        }
                     }
-                });
-            });
-
-
-            // --- 3. Нахождение всех возможных ВУЗов ---
-            const findAllChancesButton = document.getElementById('find-all-chances');
-            const allChancesResultsDiv = document.getElementById('all-chances-results');
-
-            findAllChancesButton.addEventListener('click', () => {
-                if (!currentUserData) {
-                    allChancesResultsDiv.innerHTML = '<p class="message error">Пожалуйста, сохраните ваши данные ЕГЭ и достижений.</p>';
-                    return;
                 }
-
-                allChancesResultsDiv.innerHTML = '<h3>Лучшие варианты для вас:</h3>';
-                const allResults = [];
-
-                mockUniversitiesDB.forEach(uni => {
-                    const result = calculateChance(currentUserData, uni);
-                    // Отфильтровываем совсем низкие шансы и не принимающие сейчас вузы для "возможных"
-                    // Показываем только те, где шанс > 20% и вуз принимает заявления
-                    if (result.chance !== -1 && result.chance > 20) { 
-                        allResults.push({ uni: uni.name, chance: result.chance, text: result.text });
+            },
+            watch: {
+                'userData.exams': {
+                    deep: true,
+                    handler() {
+                        this.saveToCookies();
                     }
-                });
-
-                // Сортируем по убыванию вероятности
-                allResults.sort((a, b) => b.chance -a.chance);
-
-                if (allResults.length === 0) {
-                    allChancesResultsDiv.innerHTML += "<p>Не найдено подходящих вариантов с разумными шансами (>20%) или принимающих заявления.</p>";
-                } else {
-                    allResults.slice(0, 10).forEach(item => { // Показываем топ-10
-                        const p = document.createElement('p');
-                        p.textContent = `${item.uni}: ${item.text} (Вероятность: ${item.chance.toFixed(1)}%)`;
-                        allChancesResultsDiv.appendChild(p);
-                    });
                 }
-            });
-
-            // Инициализация при загрузке
-            renderSelectedUniversities(); // Обновим счетчик выбранных вузов
-        });
-        /* ==================================== */
-        /*           JAVASCRIPT КОНЕЦ           */
-        /* ==================================== */
+            },
+            mounted() {
+                this.loadFromCookies();
+            }
+        }).mount('#app');
     </script>
 </body>
 </html>
