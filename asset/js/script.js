@@ -3,20 +3,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const burgerToggle = document.getElementById('burger-toggle');
     const menuItems = document.querySelectorAll('.menu-items a');
     
-    // Закрытие меню при клике на ссылку
+    // Закрытие меню при клике на ссылку (только на мобильных)
     menuItems.forEach(item => {
         item.addEventListener('click', function() {
-            burgerToggle.checked = false;
+            if (window.innerWidth <= 768) {
+                burgerToggle.checked = false;
+            }
         });
     });
     
-    // Закрытие меню при клике вне его области
+    // Закрытие меню при клике вне его области (только на мобильных)
     document.addEventListener('click', function(event) {
-        const isClickInsideMenu = event.target.closest('.nav-container');
-        if (!isClickInsideMenu && burgerToggle.checked) {
+        if (window.innerWidth <= 768) {
+            const isClickInsideMenu = event.target.closest('.nav-container');
+            if (!isClickInsideMenu && burgerToggle.checked) {
+                burgerToggle.checked = false;
+            }
+        }
+    });
+    
+    // Сброс состояния меню при изменении размера окна
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
             burgerToggle.checked = false;
         }
     });
     
-    console.log('Сайт загружен! Используйте бургер-меню для навигации.');
+    console.log('Сайт загружен! Адаптивное меню работает.');
 });

@@ -1,4 +1,4 @@
-/* Стили для бургер-меню */
+/* Стили для адаптивного меню */
 * {
     margin: 0;
     padding: 0;
@@ -18,18 +18,16 @@ body {
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 1rem;
     position: relative;
 }
 
+/* Меню по умолчанию (для десктопа) */
 .menu-items {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: #333;
-    padding: 1rem 0;
+    display: flex;
     list-style: none;
+    justify-content: center;
+    gap: 2rem;
 }
 
 .menu-items li {
@@ -42,23 +40,25 @@ body {
     color: white;
     text-decoration: none;
     transition: background 0.3s;
+    border-radius: 4px;
 }
 
 .menu-items a:hover {
     background: #555;
 }
 
-/* Стили для бургер-кнопки */
+/* Бургер-кнопка скрыта на десктопе */
 .checkbox {
     display: none;
 }
 
 .hamburger-lines {
-    display: block;
+    display: none;
     height: 26px;
     width: 32px;
     position: absolute;
-    top: 17px;
+    top: 50%;
+    transform: translateY(-50%);
     left: 20px;
     z-index: 2;
     cursor: pointer;
@@ -74,21 +74,56 @@ body {
     transition: transform 0.3s, opacity 0.3s;
 }
 
-/* Анимация бургер-меню */
-.checkbox:checked ~ .menu-items {
-    display: block;
+.line:last-child {
+    margin-bottom: 0;
 }
 
-.checkbox:checked ~ .hamburger-lines .line1 {
-    transform: rotate(45deg) translate(5px, 5px);
-}
-
-.checkbox:checked ~ .hamburger-lines .line2 {
-    opacity: 0;
-}
-
-.checkbox:checked ~ .hamburger-lines .line3 {
-    transform: rotate(-45deg) translate(7px, -6px);
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+    /* Показываем бургер-кнопку */
+    .hamburger-lines {
+        display: block;
+    }
+    
+    /* Скрываем меню по умолчанию */
+    .menu-items {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #333;
+        padding: 1rem 0;
+        gap: 0;
+    }
+    
+    .menu-items li {
+        width: 100%;
+    }
+    
+    .menu-items a {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0;
+    }
+    
+    /* Показываем меню когда чекбокс активен */
+    .checkbox:checked ~ .menu-items {
+        display: flex;
+    }
+    
+    /* Анимация бургер-кнопки */
+    .checkbox:checked ~ .hamburger-lines .line1 {
+        transform: rotate(45deg) translate(8px, 8px);
+    }
+    
+    .checkbox:checked ~ .hamburger-lines .line2 {
+        opacity: 0;
+    }
+    
+    .checkbox:checked ~ .hamburger-lines .line3 {
+        transform: rotate(-45deg) translate(8px, -8px);
+    }
 }
 
 /* Основной контент */
@@ -105,4 +140,5 @@ h1 {
 
 p {
     color: #666;
+    line-height: 1.8;
 }
