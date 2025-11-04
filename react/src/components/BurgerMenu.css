@@ -1,0 +1,126 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #2c3e50;
+  padding: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.logo {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.burger-line {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 3px 0;
+  transition: 0.3s;
+}
+
+.menu-items {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-item {
+  margin: 0;
+}
+
+.menu-link {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s;
+  font-family: inherit;
+}
+
+.menu-link:hover {
+  background: #34495e;
+}
+
+.menu-link.active {
+  background: #3498db;
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .burger-menu {
+    display: flex;
+  }
+
+  .menu-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #2c3e50;
+    flex-direction: column;
+    gap: 0;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .menu-items.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .menu-item {
+    width: 100%;
+  }
+
+  .menu-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 1rem 2rem;
+    border-radius: 0;
+    border-bottom: 1px solid #34495e;
+  }
+
+  /* Анимация бургера */
+  .burger-menu.open .burger-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .burger-menu.open .burger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .burger-menu.open .burger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+}
